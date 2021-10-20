@@ -15,7 +15,7 @@ def adv_encode_name(name):
 
 
 def adv():
-    bt.gap_advertise(100, adv_encode(0x01, b'\x06')
+    bt.gap_advertise(3 * 1000000, adv_encode(0x01, b'\x06')
                      + adv_encode_name('HelloFri3d'))
 
 
