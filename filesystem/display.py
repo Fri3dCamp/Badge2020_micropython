@@ -10,7 +10,7 @@ display = st7789.ST7789(spi, 240, 240, cs=machine.Pin(5, machine.Pin.OUT), dc=ma
 
 display.init()
 
-def test_display():
+def test():
     display.fill(
         st7789.color565(
             random.getrandbits(8),
