@@ -1,25 +1,35 @@
 from machine import Pin
-import time
-import _thread
+import array
+import collections
 import sys
+import time
 
 pulse_us = 4000
 start_pulse = 16
+framelength = 8
 
 blaster_link = Pin(4, Pin.IN)
 
-buffer = []
-
+frames = collections.deque((), 40)
+buffer = array.array('L')
 micros = 0
+
 def handle_blaster_irq(pin):
     global buffer
     global micros
+    global count
     delta = time.ticks_diff(time.ticks_us(), micros)
     micros = time.ticks_us()
     if delta > start_pulse*pulse_us:
         buffer = []
         return
+
     buffer.append(delta)
+
+    if (len(buffer) == (framelength + 1)*2):
+        frames.append(buffer)
+        buffer = []
+
 
 blaster_link.irq(handle_blaster_irq, Pin.IRQ_FALLING | Pin.IRQ_RISING)
 
@@ -39,9 +49,9 @@ def print_blaster_data(data):
 
 while True:
     try:
-        old_buffer = buffer
-        buffer = []
-        print_blaster_data(old_buffer)
+        data = frames.popleft()
+        print_blaster_data(data)
+    except IndexError:
         time.sleep(1)
     except KeyboardInterrupt:
         print("Bye")
