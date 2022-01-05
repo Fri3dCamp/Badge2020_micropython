@@ -1,26 +1,40 @@
-# time blaster support
-
 from machine import Pin
 import time
 import _thread
 import sys
 
+pulse_us = 4000
+start_pulse = 16
+
 blaster_link = Pin(4, Pin.IN)
 
 buffer = []
 
-def capture():
-    while True:
-        start = time.ticks_us()
-        buffer.append(blaster_link.value())
-        delta = time.ticks_diff(time.ticks_us(), start)
-        time.sleep_us(562-delta)
+micros = 0
+def handle_blaster_irq(pin):
+    global buffer
+    global micros
+    delta = time.ticks_diff(time.ticks_us(), micros)
+    micros = time.ticks_us()
+    if delta > start_pulse*pulse_us:
+        buffer = []
+        return
+    buffer.append(delta)
 
-capture_thread = _thread.start_new_thread(capture, ())
+blaster_link.irq(handle_blaster_irq, Pin.IRQ_FALLING | Pin.IRQ_RISING)
 
 def print_blaster_data(data):
-    table = ".1"
-    print(''.join(table[bit] for bit in data))
+    for delta in data:
+        pulse = (delta/pulse_us);
+        if pulse > (start_pulse-1):
+            print('H', end='')
+        elif pulse > (start_pulse/2 - 1):
+            print('L', end='')
+        elif pulse < 2:
+            print('.', end='')
+        elif pulse > 3:
+            print('_', end='')
+
     print()
 
 while True:
