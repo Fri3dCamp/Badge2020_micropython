@@ -51,10 +51,33 @@ def print_blaster_frame(data):
 
     print()
 
+def decode_blaster_frame(frame):
+    if (len(frame) != (framelength + 1)*2):
+        return
+
+    data = array.array('b')
+    for i in range(len(frame)/2):
+        delta0 = frame[i*2]
+        delta1 = frame[i*2+1]
+
+        # skip start condition
+        if (i == 0):
+            continue
+
+        if (delta0*2 < delta1):
+            data.append(1)
+        else:
+            data.append(0)
+
+    return data
+
+
 while True:
     try:
-        data = frames.popleft()
-        print_blaster_frame(data)
+        frame = frames.popleft()
+        print_blaster_frame(frame)
+        data = decode_blaster_frame(frame)
+        print(data)
     except IndexError:
         time.sleep(1)
     except KeyboardInterrupt:
