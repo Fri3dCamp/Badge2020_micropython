@@ -4,79 +4,79 @@ import collections
 import sys
 import time
 
-pulse_us = 4000
-start_pulse = 16
-framelength = 8
+class BlasterLink:
+    pulse_us = 4000
+    start_pulse = 16
+    framelength = 8
 
-blaster_link = Pin(4, Pin.IN)
+    frames = collections.deque((), 40)
+    buffer = array.array('L')
+    micros = 0
 
-frames = collections.deque((), 40)
-buffer = array.array('L')
-micros = 0
+    def __init__(self, pin):
+        self.blaster_link = Pin(pin, Pin.IN)
+        self.blaster_link.irq(self.handle_blaster_irq, Pin.IRQ_FALLING | Pin.IRQ_RISING)
+        print("BlasterLink initialised on pin ", pin)
 
-### This irq creates frames containing pulse lengths.
-# It's designed to be similar to the ouput of the ESP32 RMT
-def handle_blaster_irq(pin):
-    global buffer
-    global micros
-    global count
-    delta = time.ticks_diff(time.ticks_us(), micros)
-    micros = time.ticks_us()
-    if delta > start_pulse*pulse_us:
-        # Start detected
-        buffer = []
-        return
+    ### This irq creates frames containing pulse lengths.
+    # It's designed to be similar to the ouput of the ESP32 RMT
+    def handle_blaster_irq(self, pin):
+        delta = time.ticks_diff(time.ticks_us(), self.micros)
+        self.micros = time.ticks_us()
+        if delta > BlasterLink.start_pulse*BlasterLink.pulse_us:
+            # Start detected
+            self.buffer = []
+            return
 
-    buffer.append(delta)
+        self.buffer.append(delta)
 
-    if (len(buffer) == (framelength + 1)*2):
-        # full frame received
-        frames.append(buffer)
-        buffer = []
+        if (len(self.buffer) == (BlasterLink.framelength + 1)*2):
+            # full frame received
+            self.frames.append(self.buffer)
+            self.buffer = []
 
+    def print_blaster_frame(self, data):
+        for delta in data:
+            pulse = (delta/BlasterLink.pulse_us)
+            if pulse > (BlasterLink.start_pulse-1):
+                print('H', end='')
+            elif pulse > (BlasterLink.start_pulse/2 - 1):
+                print('L', end='')
+            elif pulse < 2:
+                print('.', end='')
+            elif pulse > 3:
+                print('_', end='')
 
-blaster_link.irq(handle_blaster_irq, Pin.IRQ_FALLING | Pin.IRQ_RISING)
+        print()
 
-def print_blaster_frame(data):
-    for delta in data:
-        pulse = (delta/pulse_us);
-        if pulse > (start_pulse-1):
-            print('H', end='')
-        elif pulse > (start_pulse/2 - 1):
-            print('L', end='')
-        elif pulse < 2:
-            print('.', end='')
-        elif pulse > 3:
-            print('_', end='')
+    def decode_blaster_frame(self, frame):
+        if (len(frame) != (BlasterLink.framelength + 1)*2):
+            return
 
-    print()
+        data = array.array('b')
+        for i in range(len(frame)/2):
+            delta0 = frame[i*2]
+            delta1 = frame[i*2+1]
 
-def decode_blaster_frame(frame):
-    if (len(frame) != (framelength + 1)*2):
-        return
+            # skip start condition
+            if (i == 0):
+                continue
 
-    data = array.array('b')
-    for i in range(len(frame)/2):
-        delta0 = frame[i*2]
-        delta1 = frame[i*2+1]
+            if (delta0*2 < delta1):
+                data.append(1)
+            else:
+                data.append(0)
 
-        # skip start condition
-        if (i == 0):
-            continue
-
-        if (delta0*2 < delta1):
-            data.append(1)
-        else:
-            data.append(0)
-
-    return data
+        return data
 
 
+print("Starting blaster link on pin 4")
+blaster_link = BlasterLink(4)
 while True:
     try:
-        frame = frames.popleft()
-        print_blaster_frame(frame)
-        data = decode_blaster_frame(frame)
+        frame = blaster_link.frames.popleft()
+        blaster_link.print_blaster_frame(frame)
+        data = blaster_link.decode_blaster_frame(frame)
         print(data)
     except IndexError:
         time.sleep(1)
