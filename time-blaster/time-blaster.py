@@ -4,11 +4,11 @@ import collections
 import sys
 import time
 
-class BlasterLink:
-    pulse_us = 4000
-    start_pulse = 16
-    framelength = 8
+pulse_us = 4000
+start_pulse = 16
+framelength = 8
 
+class Receive:
     frames = collections.deque((), 40)
     buffer = array.array('L')
     micros = 0
@@ -16,31 +16,31 @@ class BlasterLink:
     def __init__(self, pin):
         self.blaster_link = Pin(pin, Pin.IN)
         self.blaster_link.irq(self.handle_blaster_irq, Pin.IRQ_FALLING | Pin.IRQ_RISING)
-        print("BlasterLink initialised on pin ", pin)
+        print("time-blaster Receive initialised on pin ", pin)
 
     ### This irq creates frames containing pulse lengths.
     # It's designed to be similar to the ouput of the ESP32 RMT
     def handle_blaster_irq(self, pin):
         delta = time.ticks_diff(time.ticks_us(), self.micros)
         self.micros = time.ticks_us()
-        if delta > BlasterLink.start_pulse*BlasterLink.pulse_us:
+        if delta > start_pulse*pulse_us:
             # Start detected
             self.buffer = []
             return
 
         self.buffer.append(delta)
 
-        if (len(self.buffer) == (BlasterLink.framelength + 1)*2):
+        if (len(self.buffer) == (framelength + 1)*2):
             # full frame received
             self.frames.append(self.buffer)
             self.buffer = []
 
     def print_blaster_frame(self, data):
         for delta in data:
-            pulse = (delta/BlasterLink.pulse_us)
-            if pulse > (BlasterLink.start_pulse-1):
+            pulse = (delta/pulse_us)
+            if pulse > (start_pulse-1):
                 print('H', end='')
-            elif pulse > (BlasterLink.start_pulse/2 - 1):
+            elif pulse > (start_pulse/2 - 1):
                 print('L', end='')
             elif pulse < 2:
                 print('.', end='')
@@ -50,7 +50,7 @@ class BlasterLink:
         print()
 
     def decode_blaster_frame(self, frame):
-        if (len(frame) != (BlasterLink.framelength + 1)*2):
+        if (len(frame) != (framelength + 1)*2):
             return
 
         data = array.array('b')
@@ -71,7 +71,7 @@ class BlasterLink:
 
 
 print("Starting blaster link on pin 4")
-blaster_link = BlasterLink(4)
+blaster_link = Receive(4)
 while True:
     try:
         frame = blaster_link.frames.popleft()
