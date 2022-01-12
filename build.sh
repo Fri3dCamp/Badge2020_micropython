@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source esp-idf/export.sh
+
 echo "Cleaning build"
 rm -Rf micropython/ports/esp32/build-GENERIC_SPIRAM/
 
