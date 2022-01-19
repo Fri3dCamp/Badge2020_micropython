@@ -1,5 +1,7 @@
 # Main menu for the Fri3dcamp badge
 
+import uasyncio as asyncio
+
 import hardware_setup
 from gui.core.ugui import Screen, ssd
 
@@ -15,7 +17,7 @@ from gui.core.colors import *
 
 import settings
 
-wri = CWriter(ssd, font, YELLOW, BLACK)
+wri = CWriter(ssd, font, YELLOW, BLACK, verbose=False)
 
 class RunScreen(Screen):
     def __init__(self):
@@ -70,7 +72,18 @@ class MenuScreen(Screen):
             ('Settings', menu_cb, (SettingsScreen,))
         )
         Menu(wri, args=menuitems)
-        Label(wri, 100, 60, 'Enjoy Fri3d Camp!')
+        Label(wri, 100, (ssd.width//2)-(164//2), 'Enjoy Fri3d Camp!')
+
+        if settings.get('wifi_enabled'):
+            self.wifilbl = Label(wri, ssd.height-14, 10, ssd.width - 12)
+            update = asyncio.create_task(self.update_wifi())
+            self.reg_task(update, on_change=True)
+
+    async def update_wifi(self):
+        import wifi
+        while(True):
+            self.wifilbl.value('Wi-Fi: {}'.format(wifi.status()))
+            await asyncio.sleep(1)
 
 def run():
     print('Fri3d Camp menu is running.')

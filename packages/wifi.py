@@ -7,6 +7,7 @@ try:
     essid = settings.get('wifi_essid')
     password = settings.get('wifi_password')
     reconnects = settings.get('wifi_reconnects')
+    print("essid = {}, password = {}, reconnects = {}". format(essid, password, reconnects))
 except Exception as e:
     print("Could not load Wifi settings! " + e)
             
@@ -17,7 +18,6 @@ def do_connect():
         return
     print('connecting to network...')
     try:
-        print("essid = {}, password = {}, reconnects = {}". format(essid, password, reconnects))
         wlan.config(reconnects=reconnects)
         wlan.connect(essid, password)
     except Exception as e:
@@ -28,6 +28,24 @@ def is_connected():
 
 def disable():
     wlan.active(False)
+
+def status():
+    status = wlan.status()
+    if status == network.STAT_IDLE:
+        return 'idle'
+    elif status == network.STAT_CONNECTING:
+        return 'connecting'
+    elif status == network.STAT_WRONG_PASSWORD:
+        return 'wrong password'
+    elif status == network.STAT_NO_AP_FOUND:
+        return 'no ap found'
+    elif status == network.STAT_GOT_IP:
+        return 'IP {}'.format(ip())
+    
+    return 'error'
+
+def ip():
+    return wlan.ifconfig()[0]
 
 def test():
     import time
