@@ -5,4 +5,4 @@
 import BLE_beacon
 import display
 
-import gui.demos.simple
+import apps.menu
