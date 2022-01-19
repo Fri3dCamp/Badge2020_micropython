@@ -13,7 +13,7 @@ from gui.widgets.menu import Menu
 import gui.fonts.freesans20 as font
 from gui.core.colors import *
 
-from apps.settings import Settings
+from settings import Settings
 
 wri = CWriter(ssd, font, YELLOW, BLACK)
 

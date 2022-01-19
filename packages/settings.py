@@ -8,7 +8,11 @@ class Settings:
 
     default_settings = {
         'BLE-beacon_enabled': True,
-        'powersave_enabled': True
+        'powersave_enabled': True,
+        'wifi_enabled': True,
+        'wifi_essid': '',
+        'wifi_password': '',
+        'wifi_reconnects': -1
     }
 
     def __init__(self):
@@ -48,6 +52,9 @@ class Settings:
 
     def set(self, key, value):
         self.current_settings[key] = value
+
+    def get(self, key):
+        return self.current_settings.get(key)
 
 def main():
     print("Printing settings")
