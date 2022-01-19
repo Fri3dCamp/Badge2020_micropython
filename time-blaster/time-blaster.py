@@ -47,9 +47,10 @@ class Receive:
     buffer = array.array('L')
     micros = 0
 
-    def __init__(self, pin):
+    def __init__(self, pin, debug=False):
         self.blaster_link = Pin(pin, Pin.IN)
         self.blaster_link.irq(self.handle_blaster_irq, Pin.IRQ_FALLING | Pin.IRQ_RISING)
+        self.debug = debug
         print("time-blaster Receive initialised on pin ", pin)
 
     ### This irq creates frames containing pulse lengths.
@@ -109,7 +110,8 @@ class Receive:
     def __next__(self):
         try:
             frame = self.frames.popleft()
-            self.print_blaster_frame(frame)
+            if self.debug:
+                self.print_blaster_frame(frame)
             return self.decode_blaster_frame(frame)
         except:
             raise StopIteration
@@ -118,11 +120,16 @@ class Receive:
 def test():
     print("Starting blaster link on pin 4")
     blaster_link = Receive(4)
+    print("Starting IR on pin 27")
+    ir = Receive(27)
     while True:
         try:
             for data in blaster_link:
-                print(data)
-                print(data.str_decoded())
+                print("< " + str(data))
+                # print(data.str_decoded())
+            
+            for data in ir:
+                print("I " + str(data))
 
             time.sleep(1)
         except KeyboardInterrupt:
