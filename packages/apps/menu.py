@@ -13,7 +13,7 @@ from gui.widgets.menu import Menu
 import gui.fonts.freesans20 as font
 from gui.core.colors import *
 
-from settings import Settings
+import settings
 
 wri = CWriter(ssd, font, YELLOW, BLACK)
 
@@ -38,10 +38,9 @@ class SettingsScreen(Screen):
 
         Label(wri, 10, 10, 'Settings')
 
-        self.settings = Settings()
         row = 30+4
         column = 4
-        for key, value in self.settings.items():
+        for key, value in settings.items():
             label = Label(wri, row, column, key)
             if (type(value) == bool):
                 Checkbox(wri, row, ssd.width-20, height=12, value=value, callback=self.settings_cb, args=(key,))
@@ -52,10 +51,10 @@ class SettingsScreen(Screen):
 
     def settings_cb(self, widget, key):
         value = widget.value()
-        self.settings.set(key, value)
+        settings.set(key, value)
     
     def on_hide(self):
-        self.settings.store()
+        settings.store()
 
 class MenuScreen(Screen):
 

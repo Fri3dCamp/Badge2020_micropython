@@ -2,65 +2,66 @@
 
 import json
 
-class Settings:
+settings_filename = 'settings.json'
 
-    settings_filename = 'settings.json'
+default_settings = {
+    'BLE-beacon_enabled': True,
+    'powersave_enabled': True,
+    'wifi_enabled': True,
+    'wifi_essid': '',
+    'wifi_password': '',
+    'wifi_reconnects': -1
+}
 
-    default_settings = {
-        'BLE-beacon_enabled': True,
-        'powersave_enabled': True,
-        'wifi_enabled': True,
-        'wifi_essid': '',
-        'wifi_password': '',
-        'wifi_reconnects': -1
-    }
+current_settings = default_settings
 
-    def __init__(self):
-        self.current_settings = Settings.default_settings
-        self.filename = Settings.settings_filename
-        try:
-            self.load()
-        except Exception as e:
-            print(e)
-            print('Saving default!')
-            self.save(Settings.default_settings)
-
-    def load(self):
-        try:
-            f = open(self.filename, 'r')
-            self.current_settings = json.load(f)
-        except Exception as e:
-            print(e)
-            raise Exception('Could not read settings')
-        finally:
-            f.close()
-
-        print('Loaded settings: ' + json.dumps(self.current_settings))
-
-    def store(self):
-        self.save(self.current_settings)
-
-    def save(self, settings):
-        f = open(self.filename, 'w')
-        f.write(json.dumps(self.default_settings))
+def load():
+    global current_settings
+    try:
+        f = open(settings_filename, 'r')
+        current_settings = json.load(f)
+    except Exception as e:
+        print(e)
+        raise Exception('Could not read settings')
+    finally:
         f.close()
 
-        print('Saved settings: ' + json.dumps(settings))
+    print('Loaded settings: ' + json.dumps(current_settings))
 
-    def items(self):
-        return self.current_settings.items()
+def store():
+    global current_settings
+    save(current_settings)
 
-    def set(self, key, value):
-        self.current_settings[key] = value
+def save(settings):
+    f = open(settings_filename, 'w')
+    f.write(json.dumps(default_settings))
+    f.close()
 
-    def get(self, key):
-        return self.current_settings.get(key)
+    print('Saved settings: ' + json.dumps(settings))
+
+def items():
+    global current_settings
+    return current_settings.items()
+
+def set(key, value):
+    global current_settings
+    current_settings[key] = value
+
+def get(key):
+    global current_settings
+    return current_settings.get(key)
+
+try:
+    load()
+except Exception as e:
+    print(e)
+    print('Saving default!')
+    save(default_settings)
+
 
 def main():
     print("Printing settings")
-    settings = Settings()
-
-    for key, value in settings.items():
+    for key, value in items():
         print('key = {}: value = {}, type = {}'.format(key, value, type(value)))
 
 if __name__ == "__main__":
