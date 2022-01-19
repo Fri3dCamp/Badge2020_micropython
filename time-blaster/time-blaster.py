@@ -53,7 +53,7 @@ class Receive:
         print("time-blaster Receive initialised on pin ", pin)
 
     ### This irq creates frames containing pulse lengths.
-    # It's designed to be similar to the ouput of the ESP32 RMT
+    # It's designed to be similar to the output of the ESP32 RMT
     def handle_blaster_irq(self, pin):
         delta = time.ticks_diff(time.ticks_us(), self.micros)
         self.micros = time.ticks_us()
@@ -103,18 +103,30 @@ class Receive:
 
         return data
 
+    def __iter__(self):
+        return self
 
-print("Starting blaster link on pin 4")
-blaster_link = Receive(4)
-while True:
-    try:
-        frame = blaster_link.frames.popleft()
-        blaster_link.print_blaster_frame(frame)
-        data = blaster_link.decode_blaster_frame(frame)
-        print(data)
-        print(data.str_decoded())
-    except IndexError:
-        time.sleep(1)
-    except KeyboardInterrupt:
-        print("Bye")
-        sys.exit()
+    def __next__(self):
+        try:
+            frame = self.frames.popleft()
+            self.print_blaster_frame(frame)
+            return self.decode_blaster_frame(frame)
+        except:
+            raise StopIteration
+
+
+def test():
+    print("Starting blaster link on pin 4")
+    blaster_link = Receive(4)
+    while True:
+        try:
+            for data in blaster_link:
+                print(data)
+                print(data.str_decoded())
+
+            time.sleep(1)
+        except KeyboardInterrupt:
+            print("Bye")
+            sys.exit()
+
+test()
