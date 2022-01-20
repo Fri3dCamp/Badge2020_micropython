@@ -34,7 +34,7 @@ def store():
 
 def save(settings):
     f = open(settings_filename, 'w')
-    f.write(json.dumps(default_settings))
+    json.dump(settings, f)
     f.close()
 
     print('Saved settings: ' + json.dumps(settings))
