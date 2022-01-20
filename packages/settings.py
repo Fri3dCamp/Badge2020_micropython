@@ -4,13 +4,17 @@ import json
 
 settings_filename = 'settings.json'
 
-default_settings = {
-    'BLE-beacon_enabled': True,
-    'powersave_enabled': True,
+default_wifi_settings = {
     'wifi_enabled': True,
     'wifi_essid': '',
     'wifi_password': '',
     'wifi_reconnects': -1
+}
+
+default_settings = {
+    'BLE-beacon_enabled': True,
+    'powersave_enabled': True,
+    'wifi': default_wifi_settings
 }
 
 current_settings = default_settings
