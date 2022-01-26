@@ -51,9 +51,19 @@ def set(key, value):
     global current_settings
     current_settings[key] = value
 
-def get(key):
+def get(*keys):
     global current_settings
-    return current_settings.get(key)
+    sub = current_settings
+    print('get:')
+    print(keys)
+    try:
+        for key in keys:
+            sub = sub[key]
+            print(sub)
+    except KeyError:
+        return None
+
+    return sub
 
 try:
     load()
