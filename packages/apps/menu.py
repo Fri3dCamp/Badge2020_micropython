@@ -55,11 +55,18 @@ class SettingsScreen(Screen):
         row = 30+4
         column = 4
         for key, value in settings_dict.items():
-            label = Label(wri, row, column, key)
+            label = Label(wri, row, column, '{}:'.format(key))
             if (type(value) == bool):
                 Checkbox(wri, row, ssd.width-20, height=12, value=value, callback=settings_cb, args=(settings_dict, key))
             elif type(value) == dict:
                 self.sub_settings_button(row, ssd.width-20, key, value)
+            elif type(value) == type(''):
+                text = '\"{}\"'.format(value)
+                if (key == 'password'):
+                    text = '***********'
+                Label(wri, row, column+label.width+4, text)
+            elif type(value) == int:
+                Label(wri, row, column+label.width+4, '{}'.format(value))
 
             row = row + label.height + 2
     

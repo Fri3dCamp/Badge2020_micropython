@@ -5,10 +5,10 @@ import json
 settings_filename = 'settings.json'
 
 default_wifi_settings = {
-    'wifi_enabled': True,
-    'wifi_essid': '',
-    'wifi_password': '',
-    'wifi_reconnects': -1
+    'enabled': True,
+    'essid': '',
+    'password': '',
+    'reconnects': -1
 }
 
 default_settings = {
