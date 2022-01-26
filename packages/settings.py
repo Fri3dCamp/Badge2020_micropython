@@ -47,19 +47,25 @@ def items():
     global current_settings
     return current_settings.items()
 
-def set(key, value):
+def set(value, *keys):
     global current_settings
-    current_settings[key] = value
+    sub_next = current_settings
+    try:
+        for key in keys:
+            sub = sub_next
+            last_key = key
+            sub_next = sub[key]
+    except KeyError:
+        ...
+
+    sub[last_key] = value
 
 def get(*keys):
     global current_settings
     sub = current_settings
-    print('get:')
-    print(keys)
     try:
         for key in keys:
             sub = sub[key]
-            print(sub)
     except KeyError:
         return None
 
