@@ -33,7 +33,7 @@ list = [
 "gui/primitives/delay_ms.py",
 "gui/primitives/__init__.py",
 "gui/primitives/encoder.py",
-"gui/primitives/switch.py",
+"gui/primitives/pushbutton.py",
 "gui/primitives/touch.py",
 "gui/core/colors.py",
 "gui/core/writer.py",
