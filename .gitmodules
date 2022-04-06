@@ -10,3 +10,6 @@
 [submodule "esp-idf"]
 	path = esp-idf
 	url = https://github.com/espressif/esp-idf.git
+[submodule "micropython-lis2hh12"]
+	path = micropython-lis2hh12
+	url = git@github.com:tuupola/micropython-lis2hh12.git
