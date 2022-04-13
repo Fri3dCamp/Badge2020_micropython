@@ -89,7 +89,7 @@ class MenuScreen(Screen):
         Menu(wri, args=menuitems)
         Label(wri, 100, (ssd.width//2)-(164//2), 'Enjoy Fri3d Camp!')
 
-        if settings.get('wifi', 'enabled'):
+        if settings.get('wifi.enabled'):
             self.wifilbl = Label(wri, ssd.height-14, 10, ssd.width - 12)
             update = asyncio.create_task(self.update_wifi())
             self.reg_task(update, on_change=True)

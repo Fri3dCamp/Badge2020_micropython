@@ -4,17 +4,15 @@ import json
 
 settings_filename = 'settings.json'
 
-default_wifi_settings = {
-    'enabled': True,
-    'essid': '',
-    'password': '',
-    'reconnects': -1
-}
-
 default_settings = {
     'BLE-beacon_enabled': True,
     'powersave_enabled': True,
-    'wifi': default_wifi_settings
+    'wifi': {
+        'enabled': True,
+        'essid': '',
+        'password': '',
+        'reconnects': -1,
+    },
 }
 
 current_settings = default_settings
@@ -22,14 +20,12 @@ current_settings = default_settings
 def load():
     global current_settings
     try:
-        f = open(settings_filename, 'r')
-        current_settings = json.load(f)
+        with open(settings_filename, 'r') as f:
+            current_settings = json.load(f)
     except Exception as e:
-        print(e)
+        print(e, type(e))
         raise Exception('Could not read settings')
-    finally:
-        f.close()
-
+    
     print('Loaded settings: ' + json.dumps(current_settings))
 
 def store():
@@ -47,25 +43,25 @@ def items():
     global current_settings
     return current_settings.items()
 
-def set(value, *keys):
+def set(key, value):
     global current_settings
     sub_next = current_settings
     try:
-        for key in keys:
+        for k in key.split('.'):
             sub = sub_next
-            last_key = key
-            sub_next = sub[key]
+            last_key = k
+            sub_next = sub[k]
     except KeyError:
         ...
 
     sub[last_key] = value
 
-def get(*keys):
+def get(key):
     global current_settings
     sub = current_settings
     try:
-        for key in keys:
-            sub = sub[key]
+        for k in key.split('.'):
+            sub = sub[k]
     except KeyError:
         return None
 
