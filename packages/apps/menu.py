@@ -82,9 +82,9 @@ class MenuScreen(Screen):
             Screen.change(screen, args=args)
 
         menuitems = (
-            ('Run', menu_cb, (RunScreen,)),
-            ('Install', menu_cb, (InstallScreen,)),
-            ('Settings', menu_cb, (SettingsScreen, 'Settings', settings.current_settings))
+            ('   Run   ', menu_cb, (RunScreen,)),
+            (' Install ', menu_cb, (InstallScreen,)),
+            (' Settings', menu_cb, (SettingsScreen, 'Settings', settings.current_settings))
         )
         Menu(wri, args=menuitems)
         Label(wri, 100, (ssd.width//2)-(164//2), 'Enjoy Fri3d Camp!')
