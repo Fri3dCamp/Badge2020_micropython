@@ -1,15 +1,15 @@
 [submodule "micropython"]
 	path = micropython
-	url = git@github.com:micropython/micropython.git
+	url = https://github.com/micropython/micropython.git
 [submodule "micropython-micro-gui"]
 	path = micro-gui
-	url = https://github.com/peterhinch/micropython-micro-gui
+	url = https://github.com/peterhinch/micropython-micro-gui.git
 [submodule "st7789_mpy"]
 	path = st7789_mpy
-	url = git@github.com:russhughes/st7789_mpy.git
+	url = https://github.com/russhughes/st7789_mpy.git
 [submodule "esp-idf"]
 	path = esp-idf
 	url = https://github.com/espressif/esp-idf.git
 [submodule "micropython-lis2hh12"]
 	path = micropython-lis2hh12
-	url = git@github.com:tuupola/micropython-lis2hh12.git
+	url = https://github.com/tuupola/micropython-lis2hh12.git
