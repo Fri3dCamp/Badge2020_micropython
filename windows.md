@@ -11,4 +11,19 @@
 * git submodule update --init --recursive
 * esp-idf/install.sh esp32
 
-TODO flash
+## install tools to USB forward to WSL2
+* in windows
+  * install https://github.com/dorssel/usbipd-win/releases in windows
+* in WSL linux
+  * sudo apt install linux-tools-virtual hwdata
+  * sudo update-alternatives --install /usr/local/bin/usbip usbip /usr/lib/linux-tools/*/usbip 20
+
+## forward badge USB to WSL
+* in windows
+  * usbipd wsl list
+    * in the list you see you will find a line with "Silicon Labs CP210x USB to UART Bridge" with in the very front of the line a bus ID, in my case 2-1
+  * usbipd wsl attach --busid 2-1
+
+## build and flash
+* change the USB port in the last 2 lines of build.sh
+* ./build.sh
