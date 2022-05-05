@@ -82,12 +82,13 @@ class MenuScreen(Screen):
             Screen.change(screen, args=args)
 
         menuitems = (
-            ('Run', menu_cb, (RunScreen,)),
-            ('Install', menu_cb, (InstallScreen,)),
-            ('Settings', menu_cb, (SettingsScreen, 'Settings', settings.current_settings))
+            ('   Run   ', menu_cb, (RunScreen,)),
+            (' Install ', menu_cb, (InstallScreen,)),
+            (' Settings', menu_cb, (SettingsScreen, 'Settings', settings.current_settings))
         )
         Menu(wri, args=menuitems)
         Label(wri, 100, (ssd.width//2)-(164//2), 'Enjoy Fri3d Camp!')
+        Label(wri, 150, (ssd.width//2)-(144//2), '0: <  1: OK   2: >', fgcolor=WHITE, bdcolor=WHITE)
 
         if settings.get('wifi.enabled'):
             self.wifilbl = Label(wri, ssd.height-14, 10, ssd.width - 12)

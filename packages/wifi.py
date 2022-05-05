@@ -4,9 +4,9 @@ import settings
 wlan = network.WLAN(network.STA_IF)
 
 try:
-    essid = settings.get('wifi', 'essid')
-    password = settings.get('wifi', 'password')
-    reconnects = settings.get('wifi', 'reconnects')
+    essid = settings.get('wifi.essid')
+    password = settings.get('wifi.password')
+    reconnects = settings.get('wifi.reconnects')
     print("essid = {}, password = {}, reconnects = {}". format(essid, password, reconnects))
 except Exception as e:
     print("Could not load Wifi settings! " + str(e))
