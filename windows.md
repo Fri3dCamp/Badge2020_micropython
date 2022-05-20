@@ -24,6 +24,26 @@
     * in the list you see you will find a line with "Silicon Labs CP210x USB to UART Bridge" with in the very front of the line a bus ID, in my case 2-1
   * usbipd wsl attach --busid 2-1
 
+## Make a udev rule to give proper permissions and a symbolic link
+* plug in your fri3d badge and run the following command `udevadm info -a /dev/ttyUSB0`
+  look for the device `ATTRS{product}=="CP2104 USB to UART Bridge Controller"` and look for the `serial` attribute 
+* create the following file in /etc/udev/rules.d/61-usb_serial.rules (file owned by root:root 644)
+  change the serial for the one found in the command above (or remove the whole ATTRS{serial} part)
+```
+# Copy this file to /etc/udev/rules.d/61-usb_serial.rules
+
+ACTION!="add|change", GOTO="usb_serial_rules_end"
+SUBSYSTEM!="usb|tty", GOTO="usb_serial_rules_end"
+
+# CP201x
+ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ATTRS{serial}=="01C81E54", MODE="660", GROUP="plugdev", TAG+="uaccess", SYMLINK+="fri3dBadge2020"
+
+LABEL="usb_serial_rules_end"
+```
+* reload the rules `sudo udevadm control --reload`
+* unplug your badge and plug it in again
+* enjoy your personalized /dev/fri3dBadge2020 link
+
 ## build and flash
 * change the USB port in the last 2 lines of build.sh
 * ./build.sh
