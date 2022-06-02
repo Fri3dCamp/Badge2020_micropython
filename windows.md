@@ -40,7 +40,7 @@ ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ATTRS{serial}=="01C81E54", MO
 
 LABEL="usb_serial_rules_end"
 ```
-* reload the rules `sudo udevadm control --reload`
+* reload the rules `sudo udevadm control --reload` If you get an error that "Failed to send reload request: No such file or directory", run `sudo service udev restart` then run it again.
 * unplug your badge and plug it in again
 * enjoy your personalized /dev/fri3dBadge2020 link
 
