@@ -2,7 +2,7 @@
 
 import json
 
-settings_filename = 'settings.json'
+settings_filename = '/settings.json'
 
 default_settings = {
     'BLE-beacon_enabled': True,
