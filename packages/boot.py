@@ -25,7 +25,16 @@ import settings
 if settings.get('BLE-beacon_enabled'):
     import BLE_beacon
 
-if settings.get('wifi.enabled'):
-    import wifi
-    
-import frozen_apps.menu
+app = settings.get('apps.autorun')
+if app == None:
+    app = "frozen_apps.menu"
+
+if app and not app == "shell":
+    try:
+		print("Starting app '%s'..." % app)
+		if app:
+			__import__(app)
+    except BaseException as e:
+        print("Exception happened in app:",  e)
+        settings.remove('apps.autorun')
+        settings.store()

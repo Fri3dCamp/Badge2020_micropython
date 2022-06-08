@@ -50,9 +50,11 @@ def set(key, value):
         for k in key.split('.'):
             sub = sub_next
             last_key = k
+            if k not in sub:
+                sub[k] = {}
             sub_next = sub[k]
     except KeyError:
-        ...
+        pass
 
     sub[last_key] = value
 
@@ -66,6 +68,19 @@ def get(key):
         return None
 
     return sub
+
+def remove(key):
+    global current_settings
+    sub_next = current_settings
+    try:
+        for k in key.split('.'):
+            sub = sub_next
+            last_key = k
+            sub_next = sub[k]
+    except KeyError:
+        pass
+
+    del sub[last_key]
 
 try:
     load()
