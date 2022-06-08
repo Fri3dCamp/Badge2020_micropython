@@ -10,3 +10,6 @@
 [submodule "micropython-lis2hh12"]
 	path = micropython-lis2hh12
 	url = https://github.com/tuupola/micropython-lis2hh12.git
+[submodule "micropython-lib"]
+	path = micropython-lib
+	url = https://github.com/micropython/micropython-lib.git
