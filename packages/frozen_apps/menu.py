@@ -10,6 +10,9 @@ from gui.widgets.buttons import Button, CloseButton
 from gui.widgets.checkbox import Checkbox
 from gui.core.writer import CWriter
 from gui.widgets.menu import Menu
+from gui.widgets import Listbox
+
+import os
 
 # Font for CWriter
 import gui.fonts.freesans20 as font
@@ -20,10 +23,30 @@ import settings
 wri = CWriter(ssd, font, YELLOW, BLACK, verbose=False)
 
 class RunScreen(Screen):
+
     def __init__(self):
         super().__init__()
 
-        Label(wri, 10, 10, 'Run')
+        import woezel
+        install_path = woezel.get_install_path()
+        try:
+            apps = os.listdir(install_path)
+        except OSError:
+            apps = []
+
+        if len(apps) != 0:
+            apps = ['No apps installed!']
+        
+            def app_cb(lb):
+                app = lb.textvalue()
+                print('Callback', app)
+                settings.set('apps.autorun', app)
+                settings.store()
+
+            Listbox(wri, 30, 0, callback=app_cb, elements = apps)
+        else:
+            Label(wri, ssd.height//2, 30, 'No apps installed!')
+
         CloseButton(wri)
 
 class InstallScreen(Screen):
