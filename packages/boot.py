@@ -5,6 +5,7 @@
 from machine import SoftI2C, Pin
 from lis2hh12 import LIS2HH12, SF_G
 from neopixel import NeoPixel
+import buttons
 
 i2c = SoftI2C(scl=Pin(22), sda=Pin(21), freq=100000)
 imu = LIS2HH12(i2c, address=0x18, sf=SF_G)
@@ -28,6 +29,9 @@ if settings.get('BLE-beacon_enabled'):
 app = settings.get('apps.autorun')
 if app == None:
     app = "frozen_apps.menu"
+
+if buttons.boot_button.value():
+    app = "apps.menu"
 
 if app and not app == "shell":
     try:
