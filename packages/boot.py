@@ -24,22 +24,7 @@ neopixels[4] = (0,0,0)
 neopixels.write()
 
 import settings
-
-def recover_menu():
-    print("Recovering menu!")
-    try:
-        settings.remove('apps.autorun')
-    except KeyError:
-        # can happen when no apps.autorun is set
-        pass
-    settings.store()
-    machine.reset()
-
-def execute_repl():
-    print("Executing REPL!")
-    settings.set('apps.autorun', 'REPL')
-    settings.store()
-    machine.reset()
+import system
 
 if settings.get('BLE-beacon_enabled'):
     import BLE_beacon
@@ -48,14 +33,14 @@ app = settings.get('apps.autorun')
 if app == None:
     app = "frozen_apps.menu"
 
-
 async def check_recover_button(pin):
     countdown = 5
     while pin.value() == 0:
         print('Hold for {} seconds to recover main menu.'.format(countdown))
+        system.show_recover_countdown(countdown)
         countdown -= 1
         if (countdown == 0):
-            recover_menu()
+            system.recover_menu()
         await uasyncio.sleep_ms(1000)
 
 
@@ -69,16 +54,18 @@ def hold_to_recover(pin):
 
 buttons.boot_pin.irq(hold_to_recover)
 
-if app and not app == "REPL":
+if app:
     try:
 		print("Starting app '{}'...".format(app))
 		if app:
 			__import__(app)
+    except KeyboardInterrupt:
+        pass
     except BaseException as e:
-        print("Exception happened in app:",  e)
-        settings.remove('apps.autorun')
-        settings.store()
-        
-else:
-    print("REPL is running.")
-    print("Press Boot button after power-on to run main menu.")
+        print("Exception happened in app:")
+        print(e)
+        system.recover_menu()
+
+
+# if application is closed using Ctrl+C on the serial
+print("REPL is running.")

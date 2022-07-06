@@ -19,6 +19,7 @@ import gui.fonts.freesans20 as font
 from gui.core.colors import *
 
 import settings
+import system
 
 wri = CWriter(ssd, font, YELLOW, BLACK, verbose=False)
 
@@ -29,23 +30,28 @@ class RunScreen(Screen):
 
         import woezel
         install_path = woezel.get_install_path()
+        print('woezel install path: ' + install_path)
+
         try:
             apps = os.listdir(install_path)
-        except OSError:
+        except OSError as e:
+            print(e)
             apps = []
 
         if len(apps) != 0:
-            apps = ['No apps installed!']
-        
             def app_cb(lb):
                 app = lb.textvalue()
-                print('Callback', app)
-                settings.set('apps.autorun', app)
-                settings.store()
+                print('Running ', app)
+                system.start(app)
 
             Listbox(wri, 30, 0, callback=app_cb, elements = apps)
         else:
             Label(wri, ssd.height//2, 30, 'No apps installed!')
+
+        def repl_cb(button):
+            system.start_repl()
+
+        Button(wri, ssd.height - 30, 0, height=30, text='Run REPL', callback=repl_cb)
 
         CloseButton(wri)
 
