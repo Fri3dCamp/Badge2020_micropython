@@ -4,9 +4,6 @@
 [submodule "micropython-micro-gui"]
 	path = micro-gui
 	url = https://github.com/peterhinch/micropython-micro-gui.git
-[submodule "st7789_mpy"]
-	path = st7789_mpy
-	url = https://github.com/russhughes/st7789_mpy.git
 [submodule "esp-idf"]
 	path = esp-idf
 	url = https://github.com/espressif/esp-idf.git
