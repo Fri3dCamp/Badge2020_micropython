@@ -28,4 +28,4 @@ if settings.get('BLE-beacon_enabled'):
 if settings.get('wifi.enabled'):
     import wifi
     
-import apps.menu
+import frozen_apps.menu
