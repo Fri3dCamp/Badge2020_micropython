@@ -285,12 +285,7 @@ def search(query="*"):
     display_pkg(packages)
 
 def get_install_path():
-    global install_path
-    if install_path is None:
-        # sys.path[0] is current module's path
-        install_path = sys.path[1]
-    install_path = expandhome(install_path)
-    return install_path
+    return '/apps'
 
 def cleanup():
     for fname in cleanup_files:

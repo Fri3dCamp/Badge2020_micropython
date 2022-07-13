@@ -26,6 +26,9 @@ neopixels.write()
 import settings
 import system
 
+import sys
+sys.path.append('/apps')
+
 if settings.get('BLE-beacon_enabled'):
     import BLE_beacon
 
