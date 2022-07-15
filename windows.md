@@ -40,10 +40,24 @@ ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ATTRS{serial}=="01C81E54", MO
 
 LABEL="usb_serial_rules_end"
 ```
-* reload the rules `sudo udevadm control --reload` If you get an error that "Failed to send reload request: No such file or directory", run `sudo service udev restart` then run it again.
+* reload the rules `sudo udevadm control --reload`  
+  If you get an error "Failed to send reload request: No such file or directory"  
+  run `sudo service udev restart` then run `sudo udevadm control --reload` again.
 * unplug your badge and plug it in again
 * enjoy your personalized /dev/fri3dBadge2020 link
 
 ## build and flash
 * change the USB port in the last 2 lines of build.sh
 * ./build.sh
+
+## error `Failed to connect to ESP32: Timed out waiting for packet header`
+if you get the error `Failed to connect to ESP32: Timed out waiting for packet header`  
+try the following when the esptool is trying to connect:
+```
+Serial port /dev/fri3dBadge2020
+Connecting...............
+```
+1. hold the button labeled boot - drukknop - IO00
+2. press the reset button  
+This will reset the esp32 and hold it in boot mode.  
+3. Once the esptool is flashing you can let go of the boot button.
