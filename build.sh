@@ -1,9 +1,9 @@
 #!/bin/bash
 
-source esp-idf/export.sh
+BOARD=FRI3D_BADGE_2020_REV2
+SERIAL_PORT=/dev/ttyUSB0
 
-echo "Cleaning build"
-rm -Rf micropython/ports/esp32/build-GENERIC_SPIRAM/
+source esp-idf/export.sh
 
 ROOTDIR=`pwd`
 cd micropython
@@ -11,7 +11,11 @@ cd micropython
 make -C mpy-cross
 
 cd ports/esp32
+# link our board file into micropython
+[ ! -e boards/$BOARD ] && ln -s $ROOTDIR/boards/$BOARD boards/$BOARD
+
 echo $PWD
-make BOARD=GENERIC_SPIRAM FROZEN_MANIFEST="$ROOTDIR/manifest.py"
-make BOARD=GENERIC_SPIRAM PORT=/dev/ttyUSB0 erase
-make BOARD=GENERIC_SPIRAM PORT=/dev/ttyUSB0 deploy
+make BOARD=$BOARD clean
+make BOARD=$BOARD FROZEN_MANIFEST="$ROOTDIR/manifest.py"
+# make BOARD=$BOARD PORT=$SERIAL_PORT erase
+make BOARD=$BOARD PORT=$SERIAL_PORT deploy
